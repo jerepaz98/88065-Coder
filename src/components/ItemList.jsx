@@ -1,13 +1,16 @@
 import React from 'react';
 import Item from '../Item/Item';
-import './ItemList.css'; // Si necesitas estilos específicos para ItemList
 
 const ItemList = ({ productos }) => {
   return (
     <div className="row">
-      {productos.map(producto => (
-        <Item key={producto.id} producto={producto} />
-      ))}
+      {productos.length > 0 ? (
+        productos.map(producto => (
+          <Item key={producto.id} producto={producto} />
+        ))
+      ) : (
+        <p>No hay productos disponibles</p>
+      )}
     </div>
   );
 };

@@ -1,31 +1,29 @@
-import React, { createContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../../context/CartContext';
 
-export const CartContext = createContext();
-
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-
-  const addItem = (item, quantity) => {
-    const existingItem = cart.find(i => i.id === item.id);
-    if (existingItem) {
-      setCart(cart.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i));
-    } else {
-      setCart([...cart, { ...item, quantity }]);
-    }
-  };
-
-  const removeItem = (itemId) => {
-    setCart(cart.filter(i => i.id !== itemId));
-  };
-
-  const clearCart = () => setCart([]);
-
-  const totalQuantity = cart.reduce((acc, i) => acc + i.quantity, 0);
-  const totalPrice = cart.reduce((acc, i) => acc + i.precio * i.quantity, 0);
+const CartItem = ({ item }) => {
+  const { removeItem } = useContext(CartContext);
 
   return (
-    <CartContext.Provider value={{ cart, addItem, removeItem, clearCart, totalQuantity, totalPrice }}>
-      {children}
-    </CartContext.Provider>
+    <div className="card mb-3">
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <h5>{item.nombre || 'Sin nombre'}</h5>
+            <p>Cantidad: {item.quantity}</p>
+            <p>Precio unitario: ${item.precio || 0}</p>
+            <p>Subtotal: ${(item.precio || 0) * item.quantity}</p>
+          </div>
+          <button 
+            className="btn btn-danger"
+            onClick={() => removeItem(item.id)}
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default CartItem;

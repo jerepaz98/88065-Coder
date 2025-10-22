@@ -13,15 +13,23 @@ const ItemDetail = ({ producto }) => {
   };
 
   return (
-    <div>
-      <h2>{producto.nombre}</h2>
-      <p>Precio: ${producto.precio}</p>
-      <p>Stock: {producto.stock}</p>
-      {!added ? (
-        <ItemCount stock={producto.stock} onAdd={onAdd} />
-      ) : (
-        <Link to="/cart">Ir al carrito</Link>
-      )}
+    <div className="card">
+      <div className="card-body">
+        <h2 className="card-title">{producto.nombre || 'Sin nombre'}</h2>
+        <img 
+          src={producto.imagen || 'https://via.placeholder.com/300'} 
+          className="card-img-top" 
+          alt={producto.nombre || 'Producto sin nombre'} 
+        />
+        <p className="card-text">Precio: ${producto.precio || 0}</p>
+        <p className="card-text">Stock: {producto.stock || 0}</p>
+        <p className="card-text">{producto.descripcion || 'Sin descripción'}</p>
+        {!added ? (
+          <ItemCount stock={producto.stock || 0} onAdd={onAdd} />
+        ) : (
+          <Link to="/cart" className="btn btn-success">Ir al carrito</Link>
+        )}
+      </div>
     </div>
   );
 };

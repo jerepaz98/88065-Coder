@@ -1,34 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
-import ItemList from '../ItemList/ItemList';
+import ItemDetail from '../components/ItemDetail';
 
-const ItemListContainer = ({ greeting }) => {
-  const [productos, setProductos] = useState([]);
+const ItemDetailContainer = () => {
+  const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { categoriaId } = useParams();
+  const { itemId } = useParams();
 
   useEffect(() => {
     setLoading(true);
-    const productosRef = categoriaId 
-      ? query(collection(db, 'productos'), where('categoria', '==', categoriaId))
-      : collection(db, 'productos');
 
-    getDocs(productosRef)
+    const productoRef = doc(db, 'productos', itemId);
+
+    getDoc(productoRef)
       .then(snapshot => {
-        setProductos(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        if (snapshot.exists()) {
+          setProducto({ id: snapshot.id, ...snapshot.data() });
+        } else {
+          setProducto(null);
+        }
       })
-      .catch(error => console.error(error))
+      .catch(error => {
+        console.error('Error al obtener el producto:', error);
+        setProducto(null);
+      })
       .finally(() => setLoading(false));
-  }, [categoriaId]);
+  }, [itemId]);
 
   return (
-    <div className="container">
-      <h1>{greeting || 'Productos'}</h1>
-      {loading ? <p>Cargando...</p> : <ItemList productos={productos} />}
+    <div className="container mt-4">
+      {loading ? (
+        <p>Cargando producto...</p>
+      ) : producto ? (
+        <ItemDetail producto={producto} />
+      ) : (
+        <p>Producto no encontrado</p>
+      )}
     </div>
   );
 };
 
-export default ItemListContainer;
+export default ItemDetailContainer;

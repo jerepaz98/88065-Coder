@@ -25,18 +25,50 @@ const CheckoutForm = () => {
       setOrderId(docRef.id);
       clearCart();
     } catch (error) {
-      console.error(error);
+      console.error('Error al generar la orden:', error);
     }
   };
 
-  if (orderId) return <p>¡Compra realizada! ID de orden: {orderId}</p>;
+  if (orderId) return <p className="alert alert-success">¡Compra realizada! ID de orden: {orderId}</p>;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" placeholder="Nombre" onChange={handleChange} required />
-      <input name="email" placeholder="Email" onChange={handleChange} required />
-      <input name="phone" placeholder="Teléfono" onChange={handleChange} required />
-      <button type="submit">Confirmar compra</button>
+    <form onSubmit={handleSubmit} className="mt-4">
+      <div className="mb-3">
+        <input 
+          name="name" 
+          placeholder="Nombre" 
+          onChange={handleChange} 
+          required 
+          className="form-control"
+        />
+      </div>
+      <div className="mb-3">
+        <input 
+          name="email" 
+          placeholder="Email" 
+          type="email" 
+          onChange={handleChange} 
+          required 
+          className="form-control"
+        />
+      </div>
+      <div className="mb-3">
+        <input 
+          name="phone" 
+          placeholder="Teléfono" 
+          onChange={handleChange} 
+          required 
+          className="form-control"
+        />
+      </div>
+      <button 
+        type="submit" 
+        className="btn btn-primary" 
+        disabled={cart.length === 0}
+      >
+        Confirmar compra
+      </button>
+      {cart.length === 0 && <p className="mt-2 text-danger">El carrito está vacío</p>}
     </form>
   );
 };
